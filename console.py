@@ -122,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         new_instance = HBNBCommand.classes[args]()
-        storage.save()
+#        storage.save()
         print(new_instance.id)
         storage.save()
 
@@ -321,4 +321,5 @@ class HBNBCommand(cmd.Cmd):
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
 if __name__ == "__main__":
-    HBNBCommand().cmdloop()
+#    HBNBCommand().cmdloop()
+    HBNBCommand().onecmd('create User')

@@ -37,11 +37,12 @@ def c_text_page(text):
 
 
 @app.route('/python/<text>', strict_slashes=False)
+@app.route('/python', strict_slashes=False)
 def python_text_page(text='is cool'):
     """Returns 'Python ' followed by the value of the text variable.
     Replaces underscore _ symbols with a space."""
 
-#    text = text.replace('_', ' ')
+    text = text.replace('_', ' ')
     return 'Python {}'.format(escape(text))
 
 

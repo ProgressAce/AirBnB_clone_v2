@@ -10,7 +10,7 @@ Route:
     /number/<n>: display '<n> is a number' only if n is an integer
 """
 
-from flask import Flask
+from flask import Flask, render_template
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -61,6 +61,8 @@ def number_route(n):
 
     if is_int:
         return '{} is a number'.format(escape(n))
+    else:
+        return render_template('404.html')
 
 
 if __name__ == '__main__':

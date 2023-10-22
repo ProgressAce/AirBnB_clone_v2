@@ -67,7 +67,7 @@ def number_route(n):
     if is_number(n):
         return '{} is a number'.format(escape(n))
     else:
-        return render_template('404.html')
+        return render_template('404.html'), 404
 
 
 @app.route('/number_template/<n>', strict_slashes=False)
@@ -79,7 +79,7 @@ def number_template_route(n):
     if is_number(n):
         return render_template('5-number.html', num=n)
     else:
-        return render_template('404.html')
+        return render_template('404.html'), 404
 
 
 if __name__ == '__main__':

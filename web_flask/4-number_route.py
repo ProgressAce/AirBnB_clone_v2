@@ -62,7 +62,7 @@ def number_route(n):
     if is_int:
         return '{} is a number'.format(escape(n))
     else:
-        return render_template('404.html')
+        return render_template('404.html'), 404
 
 
 if __name__ == '__main__':

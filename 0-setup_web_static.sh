@@ -15,19 +15,19 @@
 # Updates the Nginx configuration to serve the content of /data/web_static/current/ to hbnb_static (ex: https://mydomainname.tech/hbnb_static).
 #     Nginx is restarted after updating the configuration
 
-sudo apt-get update
-sudo apt-get install -y nginx
+sudo apt-get update > /dev/null
+sudo apt-get install -y nginx > /dev/null
 
-mkdir -p /data/web_static/releases/test/
-mkdir -p /data/web_static/shared/
-chown -R ubuntu:ubuntu /data/
+sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p /data/web_static/shared/
+sudo chown -R ubuntu:ubuntu /data/
 
 echo "<h2><em>I have arrived!<em><h2>" > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
+ln -sf /data/web_static/releases/test /data/web_static/current
 
-DIR="\tlocation /hbnb_static {\n \
+DIR="\n\tlocation /hbnb_static {\n \
 \t\talias /data/web_static/current/;\n \
-\t}\n"
-sed "54i%${DIR}" /etc/nginx/sites-available/default
+\t}"
+sudo sed -i "47i\ ${DIR}" /etc/nginx/sites-available/default
 
 sudo service nginx restart

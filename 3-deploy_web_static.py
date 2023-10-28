@@ -7,6 +7,7 @@ do_pack = __import__('1-pack_web_static').do_pack
 do_deploy = __import__('2-do_deploy_web_static').do_deploy
 env.hosts = ['54.144.146.11', '54.90.48.124']
 
+
 def deploy():
     """Creates and distributes an archive file to the spceified host servers.
 

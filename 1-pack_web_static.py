@@ -15,12 +15,14 @@ Details:
 
 from fabric.api import local
 from datetime import datetime
+from os.path import exists
 
 
 def do_pack():
     """Generates the .tgz archive file.
     """
 
+    found = False
     now = datetime.now()
     date_format = '{}{:02d}{:02d}{:02d}{:02d}{:02d}'.format(
                    now.year, now.month, now.day,
@@ -31,7 +33,9 @@ def do_pack():
                    'web_static/')
 
     if status.succeeded:
-        path = local(f'find versions/web_static_{date_format}.tgz')
-        return path
+        found = exists(f'versions/web_static_{date_format}.tgz')
+
+    if found:
+        return f'versions/web_static_{date_format}.tgz'
     else:
         return None

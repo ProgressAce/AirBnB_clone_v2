@@ -2,10 +2,67 @@
 """Fab script that creates and distributes an archive using other fab scripts
 """
 
-from fabric.api import env
-do_pack = __import__('1-pack_web_static').do_pack
-do_deploy = __import__('2-do_deploy_web_static').do_deploy
+from fabric.api import local, env, put, run
+from datetime import datetime
+from os.path import exists
+
 env.hosts = ['54.144.146.11', '54.90.48.124']
+
+
+def do_pack():
+    """Generates the .tgz archive file.
+    """
+
+    found = False
+    now = datetime.now()
+    date_format = '{}{:02d}{:02d}{:02d}{:02d}{:02d}'.format(
+                   now.year, now.month, now.day,
+                   now.hour, now.minute, now.second)
+
+    local('mkdir -p versions')
+    status = local(f'tar -vczf versions/web_static_{date_format}.tgz ' +
+                   'web_static/')
+
+    if status.succeeded:
+        found = exists(f'versions/web_static_{date_format}.tgz')
+
+    if found:
+        return f'versions/web_static_{date_format}.tgz'
+    else:
+        return None
+
+
+def do_deploy(archive_path):
+    """Distributes an archive to specific host servers.
+
+    Returns True if all operations have been done correctly,
+        otherwise returns False
+    """
+
+    if not exists(archive_path):
+        return False
+
+    file_name = f'{archive_path}'.split('/')[1]
+    file_name_without_extension = file_name.replace('.tgz', '')
+
+    try:
+        put(f'{archive_path}', '/tmp')
+        run('mkdir -p /data/web_static/releases/' +
+            f'{file_name_without_extension}')
+        run(f'tar -xzf /tmp/{file_name} -C ' +
+            f'/data/web_static/releases/{file_name_without_extension}')
+        run(f'rm /tmp/{file_name}')
+        run('mv /data/web_static/releases/' +
+            f'{file_name_without_extension}/web_static/* ' +
+            f'/data/web_static/releases/{file_name_without_extension}/')
+        run('rm -rf /data/web_static/releases/' +
+            f'{file_name_without_extension}/web_static')
+        run('rm -rf /data/web_static/current')
+        run('ln -sf /data/web_static/releases/' +
+            f'{file_name_without_extension} /data/web_static/current')
+        return True
+    except Exception:
+        return False
 
 
 def deploy():
@@ -23,10 +80,8 @@ def deploy():
     This script deploya to servers: xx-web-01 and xx-web-02
     """
 
-    success = False
     archive_path = do_pack()
+    if archive_path is None:
+        return False
 
-    if archive_path:
-        success = do_deploy(archive_path)
-
-    return success
+    return do_deploy(archive_path)

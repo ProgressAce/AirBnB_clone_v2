@@ -59,7 +59,7 @@ $nginx_conf = "server {
 	}"
 
 file { '/var/www':
-  ensure = 'directory'
+  ensure => 'directory'
 }
 
 file { '/var/www/html':
